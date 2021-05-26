@@ -44,7 +44,6 @@ def _tryRegister():
     ConPwd = request.args.get('ConfirmPassword')
     Phone = request.args.get('PhoneNumber')
     data = tryRegister(Acc,Pwd,ConPwd,Phone)
-    #data = {0:'',1:'yoyo',2:'3030',3:'400'}
     return jsonify(data)
 
 @app.route('/home')
@@ -65,7 +64,6 @@ def _searchShopList():
     Amount = request.args.get('Amount')
     WorkOnly = request.args.get('WorkOnly')
     data = searchShopList(Shop,City,LowPrice,HighPrice,Amount,WorkOnly,Acc)
-    #data = {'data':[['a','b','c','d'],['f','g','h','j']]}
     return jsonify(data)
 
 @app.route('/shop')
@@ -80,7 +78,6 @@ def shopPage():
     MyPrice = dic['Price']
     MyAmount = dic['Amount']
     Employees = EmployeesOfShop(MyShop)
-    #Employees = [['helios','0900'],['helios','09002']]
     if(HasShop==True):
         Shop = MyShop
         return render_template('shop.html',MyShop=MyShop,MyCity=MyCity,MyPrice = MyPrice,MyAmount = MyAmount,Employees=Employees)
@@ -94,7 +91,6 @@ def _tryRegisterShop():
     Price = request.args.get('Price')
     Amount = request.args.get('Amount')
     data = tryRegisterShop(Shop,City,Price,Amount,Acc)
-    #data = {0:'',1:'yoyo',2:'3030',3:'400'}
     return jsonify(data)
 
 @app.route('/_AddEmployee', methods=['GET'])
@@ -124,133 +120,3 @@ def _AmountChange():
     Amount = request.args.get('Amount')
     data = AmountChange(Shop,Amount)
     return jsonify(data)
-'''
-@app.route('/disease')
-def index2():
-    from queryfunc import commonCountry
-    Countrylist = commonCountry()
-    return render_template('index2.html', Countrylist=Countrylist)
-
-
-#page 1
-@app.route('/_stockdate', methods=['GET'])
-def stockdateinfoquery():
-    from queryfunc import stockdateinfo
-    specdate = request.args.get('Date')
-    data = stockdateinfo(specdate)
-    print(data)
-    return jsonify(data)
-
-
-@app.route('/_history', methods=['GET'])
-def historyquery():
-    from queryfunc import historyrecord
-    data = historyrecord()
-    #print(data)
-    return jsonify(data)
-
-@app.route('/_historydel')
-def historydelquery():
-    from queryfunc import historydel
-    data = historydel()
-    #print(data)
-    return jsonify(data)
-
-@app.route('/_worldcovidvsstock', methods=['GET'])
-def worldcovidvsstockquery():
-    from queryfunc import worldcovidvsstock
-    data = worldcovidvsstock()
-    #print(data)
-    return jsonify(data)
-
-@app.route('/_UScovidvsstock', methods=['GET'])
-def UScovidvsstockquery():
-    from queryfunc import UScovidvsstock
-    data = UScovidvsstock()
-    #print(data)
-    return jsonify(data)
-
-@app.route('/_twcovidvsstock', methods=['GET'])
-def twcovidvsstockquery():
-    from queryfunc import twcovidvsstock
-    data = twcovidvsstock()
-    #print(data)
-    return jsonify(data)
-
-@app.route('/_regionRate', methods=['GET'])
-def regionRatequery():
-    from queryfunc import regionRateinfo
-    region = request.args.get('Region')
-    data = regionRateinfo(region)
-    #print(data)
-    return jsonify(data)
-
-#page 2
-@app.route('/_regionCovid19Case')
-def regionCovid19Casequery():
-    from queryfunc import regionCovid19Case
-    data = regionCovid19Case()
-    #print(data)
-    return jsonify(data)
-
-@app.route('/_regionCovid19Death')
-def regionCovid19Deathquery():
-    from queryfunc import regionCovid19Death
-    data = regionCovid19Death()
-    #print(data)
-    return jsonify(data)
-
-@app.route('/_regionMaxDeathMon', methods=['GET'])
-def regionMaxDeathMonquery():
-    from queryfunc import regionMaxDeathMoninfo
-    region = request.args.get('Region')
-    data = regionMaxDeathMoninfo(region)
-    #print(data)
-    return jsonify(data)
-
-@app.route('/_regionMaxCaseMon', methods=['GET'])
-def regionMaxCaseMonquery():
-    from queryfunc import regionMaxCaseMoninfo
-    region = request.args.get('Region')
-    data = regionMaxCaseMoninfo(region)
-    #print(data)
-    return jsonify(data)
-
-@app.route('/_regionSARSCase')
-def regionSARSCasequery():
-    from queryfunc import regionSARSCase
-    data = regionSARSCase()
-    #print(data)
-    return jsonify(data)
-
-@app.route('/_regionSARSDeath')
-def regionSARSDeathquery():
-    from queryfunc import regionSARSDeath
-    data = regionSARSDeath()
-    #print(data)
-    return jsonify(data)
-
-@app.route('/_regionSARSMaxCaseMon', methods=['GET'])
-def regionSARSMaxCaseMonquery():
-    from queryfunc import regionSARSMaxCaseMoninfo
-    region = request.args.get('Region')
-    data = regionSARSMaxCaseMoninfo(region)
-    #print(data)
-    return jsonify(data)
-
-@app.route('/_regionSARSMaxDeathMon', methods=['GET'])
-def regionSARSMaxDeathMonquery():
-    from queryfunc import regionSARSMaxDeathMoninfo
-    region = request.args.get('Region')
-    data = regionSARSMaxDeathMoninfo(region)
-    #print(data)
-    return jsonify(data)
-
-@app.route('/_countryinfo', methods=['GET'])
-def countryinfoquery():
-    from queryfunc import countryinfo
-    country = request.args.get('Country')
-    data = countryinfo(country)
-    #print(data)
-    return jsonify(data)
-    '''
