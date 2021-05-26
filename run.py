@@ -68,18 +68,6 @@ def _searchShopList():
     data = searchShopList(Shop,City,LowPrice,HighPrice,Amount,WorkOnly,Acc)
     return jsonify(data)
 
-@app.route('/_searchMyOrderList', methods=['GET'])
-def _searchShopList():
-    from queryfunc import searchShopList
-    Shop = request.args.get('Shop')
-    City = request.args.get('City')
-    LowPrice = request.args.get('LowPrice')
-    HighPrice = request.args.get('HighPrice')
-    Amount = request.args.get('Amount')
-    WorkOnly = request.args.get('WorkOnly')
-    data = searchShopList(Shop,City,LowPrice,HighPrice,Amount,WorkOnly,Acc)
-    return jsonify(data)
-
 @app.route('/shop')
 def shopPage():
     if Acc == '':
@@ -109,22 +97,6 @@ def _tryRegisterShop():
     data = tryRegisterShop(Shop,City,Price,Amount,Acc)
     return jsonify(data)
 
-@app.route('/shopOrder')
-def shopPage():
-    if Acc == '':
-        return render_template('login.html')
-    from queryfunc import getShops
-    Shops = getShops()
-    Status = ['All','Not Finished','Finished','Cancelled']
-    return render_template('shopOrder.html',Status=Status,Shops=Shops)
-
-@app.route('/myOrder')
-def shopPage():
-    if Acc == '':
-        return render_template('login.html')
-    Status = ['All','Not Finished','Finished','Cancelled']
-    return render_template('myOrder.html',Status=Status)
-
 @app.route('/_AddEmployee', methods=['GET'])
 def _AddEmployee():
     from queryfunc import AddEmployee
@@ -151,4 +123,58 @@ def _AmountChange():
     from queryfunc import AmountChange
     Amount = request.args.get('Amount')
     data = AmountChange(Shop,Amount)
+    return jsonify(data)
+    
+# New Stuff!
+
+
+@app.route('/myOrder')
+def myOrder():
+    if Acc == '':
+        return render_template('login.html')
+    Status = ['All','Not Finished','Finished','Cancelled']
+    return render_template('myOrder.html',Status=Status)
+
+@app.route('/_searchMyOrderList', methods=['GET'])
+def _searchMyOrderList():
+    from queryfunc import searchShopOrderList
+    Status = request.args.get('Status')
+    data = searchShopOrderList(Shop,Status)
+    # return like searchShopList
+    # OID Status Start End Shop Total Price
+    return jsonify(data)
+
+@app.route('/_searchShopOrderList', methods=['GET'])
+def _searchShopOrderList():
+    from queryfunc import searchShopOrderList
+    _Shop = request.args.get('Shop')
+    Status = request.args.get('Status')
+    data = searchShopOrderList(_Shop,Status)
+    return jsonify(data)
+
+@app.route('/shopOrder')
+def shopOrder():
+    if Acc == '':
+        return render_template('login.html')
+    from queryfunc import getShops
+    Shops = getShops()
+    #return all Shops in a list
+    Status = ['All','Not Finished','Finished','Cancelled']
+    return render_template('shopOrder.html',Status=Status,Shops=Shops)
+
+@app.route('/_Order', methods=['GET'])
+def _Order():
+    from queryfunc import Order
+    Amount = request.args.get('Amount')
+    _Shop = request.args.get('Shop')
+    data = Order(_Shop,Amount)
+    # return message: success or fail and why
+    return jsonify(data)
+
+@app.route('/_DelOrder', methods=['GET'])
+def _DelOrder():
+    from queryfunc import DelOrder
+    OID = request.args.get('OID')
+    data = DelOrder(OID)
+    # return message: success or fail and why
     return jsonify(data)

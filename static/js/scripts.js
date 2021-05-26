@@ -101,6 +101,7 @@ $("#SearchShopListbtn").bind("click", function () {
             <td>City</td>\
             <td>Mask Price</td>\
             <td>Mask Amount</td>\
+            <td></td>\
             </tr></thead>';
             for (var i = 0; i < result.data.length; i++) {
                 insertText += '<tr>';
@@ -109,7 +110,11 @@ $("#SearchShopListbtn").bind("click", function () {
                     insertText += result.data[i][j];
                     insertText += '</td>';
                 }
-                insertText += '</tr>';
+                insertText += '<td><input type="text" name="Amount" id="_';
+                insertText += result.data[i][0];
+                insertText += '"/><button type="button" class="OrderBtn" id="';
+                insertText += result.data[i][0];
+                insertText += '">Buy!</button></td></tr>';
             }
             insertText += '</table>';
 
@@ -152,9 +157,9 @@ $("#SearchMyOrderbtn").bind("click", function () {
                     insertText += result.data[i][j];
                     insertText += '</td>';
                 }
-                insertText += '<td><button type="button" class="DelOrderBtn" id=';
+                insertText += '<td><button type="button" class="DelMyOrderBtn" id="';
                 insertText += result.data[i][0];
-                insertText += '>X</button></td></tr>';
+                insertText += '">X</button></td></tr>';
             }
             insertText += '</table>';
 
@@ -162,6 +167,7 @@ $("#SearchMyOrderbtn").bind("click", function () {
         }
     })
 })
+
 $("#SearchShopOrderbtn").bind("click", function () {
     const form = document.forms["OrderSelect"];
     const Status = form.elements.Status.value;
@@ -194,14 +200,56 @@ $("#SearchShopOrderbtn").bind("click", function () {
                     insertText += result.data[i][j];
                     insertText += '</td>';
                 }
-                insertText += '<td><button type="button" class="DoneOrderBtn" id=';
+                insertText += '<td><button type="button" class="DoneOrderBtn" id="';
                 insertText += result.data[i][0];
-                insertText += '>Done</button><button type="button" class="DelOrderBtn" id=';
+                insertText += '">Done</button><button type="button" class="DelOrderBtn" id="';
                 insertText += result.data[i][0];
-                insertText += '>X</button></td></tr>';
+                insertText += '">X</button></td></tr>';
             }
             insertText += '</table>';
             $('#searchWrap').append(insertText);
+        }
+    })
+})
+
+$(".DelOrderBtn").bind("click", function () {
+    var data = {
+        OID: this.id
+    }
+    $.ajax({
+        url: '/_DelOrder',
+        type: 'GET',
+        data: data,
+        beforeSend: function () {
+        },
+        success: function (result) {
+            alert(result.data)
+            location.reload();
+        },
+        complete: function () {
+        },
+        error: function () {
+        }
+    })
+})
+$(".OrderBtn").bind("click", function () {
+    var data = {
+        Shop: this.id,
+        Amount:document.getElementById('_'+this.id).value
+    }
+    $.ajax({
+        url: '/_Order',
+        type: 'GET',
+        data: data,
+        beforeSend: function () {
+        },
+        success: function (result) {
+            alert(result.data)
+            location.reload();
+        },
+        complete: function () {
+        },
+        error: function () {
         }
     })
 })
@@ -274,27 +322,6 @@ $("#AddEmployee").bind("click", function () {
 })
 
 $(".DelEmployeeBtn").bind("click", function () {
-    var data = {
-        Employee: this.id
-    }
-    $.ajax({
-        url: '/_DelEmployee',
-        type: 'GET',
-        data: data,
-        beforeSend: function () {
-        },
-        success: function (result) {
-            alert(result.data)
-            location.reload();
-        },
-        complete: function () {
-        },
-        error: function () {
-        }
-    })
-})
-
-$(".DelOrderBtn").bind("click", function () {
     var data = {
         Employee: this.id
     }
