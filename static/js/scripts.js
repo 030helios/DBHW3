@@ -122,6 +122,90 @@ $("#SearchShopListbtn").bind("click", function () {
     })
 })
 
+$("#SearchMyOrderbtn").bind("click", function () {
+    const form = document.forms["OrderSelect"];
+    const Status = form.elements.Status.value;
+    var data = {
+        Status:Status
+    }
+    $.ajax({
+        url: '/_searchMyOrderList',
+        type: 'GET',
+        data: data,
+        beforeSend: function () {
+            $("table").remove('#searchWrapData');
+        },
+        success: function (result) {
+            var insertText = '<table class="table" id="searchWrapData"><thead>';
+            insertText += '<tr><td>OID</td>\
+            <td>Status</td>\
+            <td>Start</td>\
+            <td>End</td>\
+            <td>Shop</td>\
+            <td>Total Price</td>\
+            <td>Action</td>\
+            </tr></thead>';
+            for (var i = 0; i < result.data.length; i++) {
+                insertText += '<tr>';
+                for (var j = 0; j < result.data[i].length; j++) {
+                    insertText += '<td>';
+                    insertText += result.data[i][j];
+                    insertText += '</td>';
+                }
+                insertText += '<td><button type="button" class="DelOrderBtn" id=';
+                insertText += result.data[i][0];
+                insertText += '>X</button></td></tr>';
+            }
+            insertText += '</table>';
+
+            $('#searchWrap').append(insertText);
+        }
+    })
+})
+$("#SearchShopOrderbtn").bind("click", function () {
+    const form = document.forms["OrderSelect"];
+    const Status = form.elements.Status.value;
+    const Shop = form.elements.Shop.value;
+    var data = {
+        Status:Status,
+        Shop:Shop
+    }
+    $.ajax({
+        url: '/_searchShopOrderList',
+        type: 'GET',
+        data: data,
+        beforeSend: function () {
+            $("table").remove('#searchWrapData');
+        },
+        success: function (result) {
+            var insertText = '<table class="table" id="searchWrapData"><thead>';
+            insertText += '<tr><td>OID</td>\
+            <td>Status</td>\
+            <td>Start</td>\
+            <td>End</td>\
+            <td>Shop</td>\
+            <td>Total Price</td>\
+            <td>Action</td>\
+            </tr></thead>';
+            for (var i = 0; i < result.data.length; i++) {
+                insertText += '<tr>';
+                for (var j = 0; j < result.data[i].length; j++) {
+                    insertText += '<td>';
+                    insertText += result.data[i][j];
+                    insertText += '</td>';
+                }
+                insertText += '<td><button type="button" class="DoneOrderBtn" id=';
+                insertText += result.data[i][0];
+                insertText += '>Done</button><button type="button" class="DelOrderBtn" id=';
+                insertText += result.data[i][0];
+                insertText += '>X</button></td></tr>';
+            }
+            insertText += '</table>';
+            $('#searchWrap').append(insertText);
+        }
+    })
+})
+
 $("#RegisterShopBtn").bind("click", function () {
     const form = document.forms["RegisterShop"];
     const Shop = form.elements.Shop.value;
@@ -210,6 +294,27 @@ $(".DelEmployeeBtn").bind("click", function () {
     })
 })
 
+$(".DelOrderBtn").bind("click", function () {
+    var data = {
+        Employee: this.id
+    }
+    $.ajax({
+        url: '/_DelEmployee',
+        type: 'GET',
+        data: data,
+        beforeSend: function () {
+        },
+        success: function (result) {
+            alert(result.data)
+            location.reload();
+        },
+        complete: function () {
+        },
+        error: function () {
+        }
+    })
+})
+
 $("#PriceChange").bind("click", function () {
     const form = document.forms["PriceChange"];
     const Price = form.elements.Price.value;
@@ -253,187 +358,3 @@ $("#AmountChange").bind("click", function () {
         }
     })
 })
-
-/*
-$("#stockdatebtn").bind("click", function () {
-    const form = document.forms["stock"];
-    const year = form.elements.year.value;
-    const month = form.elements.month.value;
-    const day = form.elements.day.value;
-    var date = year + '/' + month + '/' + day;
-    var data = {
-        Date: date
-    }
-    $.ajax({
-        url: '/_stockdate',
-        type: 'GET',
-        data: data,
-        beforeSend: function () {
-            $("table").remove('#stockdatedata');
-            $("table").remove('#historydata');
-            $("#stockdatebtn").attr({ disabled: "disabled" });
-        },
-        success: function (result) {
-            var insertText = '<table class="table" id="stockdatedata"><thead>';
-            insertText += '<tr>';
-            for (var i = 0; i < result.Header.length; i++) {
-                insertText += '<td>';
-                insertText += result.Header[i];
-                insertText += '</td>';
-            }
-            insertText += '</tr></thead>';
-
-            for (var i = 0; i < result.Data.length; i++) {
-                insertText += '<tr>';
-                for (var j = 0; j < result.Data[i].length; j++) {
-                    insertText += '<td>';
-                    insertText += result.Data[i][j];
-                    insertText += '</td>';
-                }
-                insertText += '</tr>';
-            }
-            insertText += '</table>';
-
-            $('#stockdate').append(insertText);
-        },
-        complete: function () {
-            $("#stockdatebtn").removeAttr("disabled");
-        },
-        error: function (result) {
-            alert("Error.\nMaybe you have closed the app or have a illegal query to database.\nPlease check the status.");
-        }
-    })
-
-    $.ajax({
-        url: '/_history',
-        type: 'GET',
-        data: data,
-        beforeSend: function () {
-            //
-        },
-        success: function (result) {
-            var insertText = '<table class="table" id="historydata"><thead>';
-            insertText += '<tr>';
-            for (var i = 0; i < result.Header.length; i++) {
-                insertText += '<td>';
-                insertText += result.Header[i];
-                insertText += '</td>';
-            }
-            insertText += '</tr></thead>';
-
-            for (var i = result.Data.length - 1; i >= result.Data.length - 5 && i >= 0; i--) {
-                insertText += '<tr>';
-                for (var j = 0; j < result.Data[i].length; j++) {
-                    insertText += '<td>';
-                    insertText += result.Data[i][j];
-                    insertText += '</td>';
-                }
-                insertText += '</tr>';
-            }
-            insertText += '</table>';
-
-            $('#history').append(insertText);
-        },
-        complete: function () {
-            //$("#stockdatebtn").removeAttr("disabled");
-        },
-        error: function (result) {
-            alert("Error.\nMaybe you have closed the app or have a illegal query to database.\nPlease check the status.");
-        }
-    })
-
-})
-
-$("#historydelbtn").bind("click", function () {
-    var data = {}
-    $.ajax({
-        url: '/_historydel',
-        type: 'GET',
-        data: data,
-        beforeSend: function () {
-            $("table").remove('#historydata');
-            $("#historydelbtn").attr({ disabled: "disabled" });
-        },
-        success: function (result) {
-            var insertText = '<table class="table" id="historydata"><thead>';
-            insertText += '<tr>';
-            for (var i = 0; i < result.Header.length; i++) {
-                insertText += '<td>';
-                insertText += result.Header[i];
-                insertText += '</td>';
-            }
-            insertText += '</tr></thead>';
-
-            for (var i = result.Data.length - 1; i < result.Data.length - 5 && i >= 0; i++) {
-                insertText += '<tr>';
-                for (var j = 0; j < result.Data[i].length; j++) {
-                    insertText += '<td>';
-                    insertText += result.Data[i][j];
-                    insertText += '</td>';
-                }
-                insertText += '</tr>';
-            }
-            insertText += '</table>';
-
-            $('#history').append(insertText);
-        },
-        complete: function () {
-            $("#historydelbtn").removeAttr("disabled");
-        },
-        error: function (result) {
-            alert("Error.\nMaybe you have closed the app or have a illegal query to database.\nPlease check the status.");
-        }
-    })
-})
-
-$("#regionRatebtn").bind("click", function () {
-    const form = document.forms["regionRate"];
-    const region = form.elements.region.value;
-    var data = {
-        Region: region
-    }
-    $.ajax({
-        url: '/_regionRate',
-        type: 'GET',
-        data: data,
-        beforeSend: function () {
-            //$("div").remove('#regionRatedata');
-            //$("#regionRate").append('<div id="regionRatedata"></div>');
-            $("#regionRatedatabtn").attr({ disabled: "disabled" });
-        },
-        success: function (result) {
-            var chart = c3.generate({
-                bindto: '#regionRatedata',
-                data: {
-                    x: 'Date',
-                    xFormat: '%Y/%m',
-                    rows: result.Data,
-                    axes: {
-                        rate: 'y',
-                        Dow_Adj_Close_rate: 'y2'
-                    }
-                },
-                axis: {
-                    x: {
-                        type: 'timeseries',
-                        tick: {
-                            format: '%Y/%m'
-                        }
-                    },
-                    y2: {
-                        show: true
-                    }
-                }
-            });
-        },
-        complete: function () {
-            $("#regionRatedatabtn").removeAttr("disabled");
-        },
-        error: function (result) {
-            alert("Error.\nMaybe you have closed the app or have a illegal query to database.\nPlease check the status.");
-        }
-
-    })
-
-})
-*/

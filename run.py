@@ -66,6 +66,18 @@ def _searchShopList():
     data = searchShopList(Shop,City,LowPrice,HighPrice,Amount,WorkOnly,Acc)
     return jsonify(data)
 
+@app.route('/_searchMyOrderList', methods=['GET'])
+def _searchShopList():
+    from queryfunc import searchShopList
+    Shop = request.args.get('Shop')
+    City = request.args.get('City')
+    LowPrice = request.args.get('LowPrice')
+    HighPrice = request.args.get('HighPrice')
+    Amount = request.args.get('Amount')
+    WorkOnly = request.args.get('WorkOnly')
+    data = searchShopList(Shop,City,LowPrice,HighPrice,Amount,WorkOnly,Acc)
+    return jsonify(data)
+
 @app.route('/shop')
 def shopPage():
     from queryfunc import EmployeesOfShop, hasShop, getCities

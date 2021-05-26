@@ -37,8 +37,8 @@ Released   : 20140225
 			<ul>
 				<li><a href="/home" accesskey="1" title="">Home</a></li>
 				<li><a href="/shop" accesskey="2" title="">Shop</a></li>
-				<li><a href="/myOrder" accesskey="3" title="">My Order</a></li>
-				<li class="current_page_item"><a href="/shopOrder" accesskey="4" title="">Shop Order</a></li>
+				<li class="current_page_item"><a href="/myOrder" accesskey="3" title="">My Order</a></li>
+				<li><a href="/shopOrder" accesskey="4" title="">Shop Order</a></li>
 				<li><a href="/" accesskey="5" title="">Logout</a></li>
 			</ul>
 		</div>
@@ -47,66 +47,33 @@ Released   : 20140225
 <div id="wrapper">
 	<div id="page" class="container">
 		<div id="content">
-			<!--Profile-->
-			<h1>Profile</h1>
-			<table class="table" id="AccountData">
-				<tr>
-					<td>Account</td>
-					<td>{{Acc}}</td>
-				</tr>
-				<tr>
-					<td>Phone</td>
-					<td>{{Phone}}</td>
-				</tr>
-			</table>
 			<!--select shop-->
-			<h1>Shop List</h1>
+			<h1>Shop Order</h1>
 			<table class="table">
-				<form name="ShopSelect">
+				<form name="OrderSelect">
 					<tr>
 						<td>Shop</td>
 						<td>
-							<input type="text" name="Shop" id="Shop" />
-						</td>
-					</tr>
-					<tr>
-						<td>City</td>
-						<td>
-							<select name="City">
-							{% for city in Cities%}
-								<option value="{{city}}">{{city}}</option>
+							<select name="Shop">
+							{% for shop in Shops%}
+								<option value="{{Shops}}">{{shop}}</option>
 							{% endfor%}
 							</select>
 						</td>
-					</tr>
-					<tr>
-						<td>Price</td>
+						<td>Status</td>
 						<td>
-							<input type="text" name="LowPrice" id="LowPrice" />
-							<nobr>~</nobr>
-							<input type="text" name="HighPrice" id="HighPrice" />
-							<h2></h2>
-						</td>
-					</tr>
-					<tr>
-						<td>Amount</td>
-						<td>
-							<select name="Amount">
-							{% for amount in Amounts%}
-								<option value="{{amount}}">{{amount}}</option>
+							<select name="Status">
+							{% for status in Status%}
+								<option value="{{Status}}">{{status}}</option>
 							{% endfor%}
 							</select>
 						</td>
 					</tr>
 				</form>
 			</table>
-                <button type="button" class="btn" id="SearchShopListbtn">Search</button>
-				<label class="switch">
-				  <input type="checkbox" id="WorkOnly">
-				  <span class="slider round">Only show the shop I work at</span>
-				</label>
+                <button type="button" class="btn" id="SearchMyOrderbtn">Search</button>
 			<h6></h6>
-			<li id="searchShopWrap"></li>
+			<li id="searchWrap"></li>
 		</div>
 	</div>
 </div>
