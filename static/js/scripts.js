@@ -50,8 +50,10 @@ $("#RegisterBtn").bind("click", function () {
             $("nobr").remove('#errMsg');
         },
         success: function (result) {
-            if (result[0] == 'Register Success')
-                alert(result[0])
+            if (result[0] == 'Register success!'){
+                alert(result[0]);
+                window.location = '/';
+            }
             else {
                 if (result[0] != '')
                     $('#M0').append(errHead + result[0] + errEnd)

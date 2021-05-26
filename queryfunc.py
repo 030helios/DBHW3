@@ -211,7 +211,7 @@ def searchShopList(Shop,City,LowPrice,HighPrice,Amount,only,name):
         if Amount == "1~99":
             query += "amount >= 1 and amount <= 99 and  "
         if Amount == "100+":
-            query += "amount >= 100 and "
+            query += "amount >= 100 and  "
     if only == "true":
         query += "( shopname in (select shopname from shop natural join employee where username = '" + str(name) + "') or shopname in (select shopname from shop where shopowner = '" + str(name) + "') )      "
     query = query[0:-6]
