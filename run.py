@@ -48,6 +48,8 @@ def _tryRegister():
 
 @app.route('/home')
 def homePage():
+    if Acc == '':
+        return render_template('login.html')
     from queryfunc import getCities
     Cities = getCities()
     Cities.insert(0,'All')
@@ -80,6 +82,8 @@ def _searchShopList():
 
 @app.route('/shop')
 def shopPage():
+    if Acc == '':
+        return render_template('login.html')
     from queryfunc import EmployeesOfShop, hasShop, getCities
     global Shop
     Cities = getCities()
@@ -104,6 +108,22 @@ def _tryRegisterShop():
     Amount = request.args.get('Amount')
     data = tryRegisterShop(Shop,City,Price,Amount,Acc)
     return jsonify(data)
+
+@app.route('/shopOrder')
+def shopPage():
+    if Acc == '':
+        return render_template('login.html')
+    from queryfunc import getShops
+    Shops = getShops()
+    Status = ['All','Not Finished','Finished','Cancelled']
+    return render_template('shopOrder.html',Status=Status,Shops=Shops)
+
+@app.route('/myOrder')
+def shopPage():
+    if Acc == '':
+        return render_template('login.html')
+    Status = ['All','Not Finished','Finished','Cancelled']
+    return render_template('myOrder.html',Status=Status)
 
 @app.route('/_AddEmployee', methods=['GET'])
 def _AddEmployee():
