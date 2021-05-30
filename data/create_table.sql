@@ -20,6 +20,18 @@ create table user(
     primary key (username)
 );
 
+create table order(
+    ID int not null,
+    stat varchar(20) not null,
+    orderer varchar(20) not null,
+    seller varchar(20) not null,
+    time_start varchar(20) not null,
+    time_end varchar(20) not null,
+    shopname varchar(20) not null,
+    amount int not null,
+    primary key (ID)
+);
+
 /* load data local infile './SHOP.csv'
 into table shop
 fields terminated by ','
