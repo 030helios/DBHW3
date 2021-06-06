@@ -1,11 +1,21 @@
 # Remember to put string in '' when writing query
 
+def prevent(target):
+    if target.find('=') != -1 or target.find("'") != -1 or target.find('#') != -1:
+        return False  #Illegal character detected
+    else
+        return True
+
 def tryLogin(Acc, pwd):
     import sqlite3
     import hashlib
     m = hashlib.md5()
 
     data = {'Passed' : False, 'Phone' : ''}
+
+    if prevent(Acc) == False or prevent(pwd) == True:
+        print("Not passed")
+        return data        
     
     query = \
         "select username, pwd, phone \
@@ -71,6 +81,9 @@ def tryRegister(Acc, Pwd, ConPwd, Phone):
     if Phone.isdigit() == False and Phone != "":
         data['3'] = "Invalid phone format"
         noEx = False
+    if target(Acc) == False:
+        data['0'] = "Illegal character detected"
+        noEx = False      
 
     if not noEx:
         return data
@@ -142,6 +155,9 @@ def tryRegisterShop(Shop,City,Price,Amount,name):
     if Amount.isdigit() == False:
         data['3'] = "Invalid format"
         noEx = False
+    if target(Shop) == False:
+        data['0'] = "Illegal character detected"
+        noEx = False        
     
     if noEx == False:
         db.close()
@@ -197,13 +213,13 @@ def searchShopList(Shop,City,LowPrice,HighPrice,Amount,only,name):
             LowPrice = HighPrice
             HighPrice = tmp
 
-    if Shop != "":
+    if Shop != "" and prevent(Shop) != False:
         query += "shopname like '%" + str(Shop) + "%' and  "
     if City != "All":
         query += "city = '" + str(City) + "' and  "
-    if LowPrice != "":
+    if LowPrice != "" and prevent(LowPrice) != False:
         query += "price >= " + str(LowPrice) + " and  "
-    if HighPrice != "":
+    if HighPrice != "" and prevent(HighPrice) != False:
         query += "price <= " + str(HighPrice) + " and  "
     if Amount != "All":
         if Amount == "0":
@@ -363,17 +379,98 @@ def AmountChange(Shop, Amount):
     data["data"] = "Amount succesfully changed"
     return data
 
+# return like searchShopList
+# OID Status Start End Shop Total Price
 def searchShopOrderList(Shop,Status):
     import sqlite3
+    data = {'data':[]}
+    query1 = \
+    "select ID, stat, time_start, time_end, shopname, order_amount, price\
+    from (order_ natural join shop)\
+    where "
+    if Shop != "All":
+        query += "shopname like '%" + str(Shop) + "%' and  "
+    if Status != "All":
+        query += "stat = '" + str(Status) + "' and  "
+    query1 = query1[0:-6]
 
+    db = sqlite3.connect("data.db")
+    cursor1 = db.execute(query1)
 
+    for row in cursor1:
+        insert = []
+        for i in range(len(row) - 1):
+            insert.append(row[i])
+        price = int(row[-1]) * int(row[-2])
+        insert.append(price)
+        data['data'].append(insert)
+
+    return data
+
+#return all Shops in a list
 def getShops():
     import sqlite3
+    data = []
+    query = \
+    "select shopname\
+    from shop"
 
+    db = sqlite3.connect("data.db")
+    cursor = db.execute(query)
 
+    for row in cursor:
+        data.append(str(row[0]))
+    
+    return data
+
+# return message: success or fail and why
 def Order(Shop,Amount):
     import sqlite3
+    data = {"data": ""}
+    if Amount.isdigit() == False or int(Amount) < 0:
+        data["data"] = "Illegal input Amount"
+        return data
+    
+    query = "select amount\
+    from shop\
+    where shopname = '" + str(Shop) + "'"
 
+    db = sqlite3.connect("data.db")
+    cursor = db.execute(query)
+    row = cursor.fetchone()
 
+    inventory = int(row[0])
+
+    if int(Amount) > inventory:
+        data["data"] = "Amount is larger than the inventory of the shop"
+        return data
+    
+    data = "Successfully ordered"
+
+    '''change = inventory - int(Amount)
+
+    query = "update shop\
+    set amount = " + str(change) + " where shopname = '" + str(Shop) + "'" 
+    cursor = db.execute(query)
+    db.commit()
+    data["data"] = "Amount succesfully changed"'''
+
+    return data
+
+# return message: success or fail and why
 def DelOrder(OID):
     import sqlite3
+    data = {"data": ""}
+    query = "select ID\
+    from order_\
+    where ID = '" + str(OID) + "'"
+
+    db = sqlite3.connect("data.db")
+    cursor = db.execute(query)
+    row = cursor.fetchone()
+
+    if row == None:
+        data["data"] = "Order doesn't exist"
+
+    query1 = "delete from order_\
+    where ID = '" + str(OID) + "'"
