@@ -20,7 +20,7 @@ create table user(
     primary key (username)
 );
 
-create table order(
+create table order_(
     ID int not null,
     stat varchar(20) not null,
     orderer varchar(20) not null,
