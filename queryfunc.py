@@ -361,4 +361,19 @@ def AmountChange(Shop, Amount):
     cursor = db.execute(query)
     db.commit()
     data["data"] = "Amount succesfully changed"
-    return data    
+    return data
+
+def searchShopOrderList(Shop,Status):
+    import sqlite3
+
+
+def getShops():
+    import sqlite3
+
+
+def Order(Shop,Amount):
+    import sqlite3
+
+
+def DelOrder(OID):
+    import sqlite3
