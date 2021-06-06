@@ -3,7 +3,7 @@
 def prevent(target):
     if target.find('=') != -1 or target.find("'") != -1 or target.find('#') != -1:
         return False  #Illegal character detected
-    else
+    else:
         return True
 
 def tryLogin(Acc, pwd):
@@ -81,9 +81,12 @@ def tryRegister(Acc, Pwd, ConPwd, Phone):
     if Phone.isdigit() == False and Phone != "":
         data['3'] = "Invalid phone format"
         noEx = False
+    #error here when register
+        '''
     if target(Acc) == False:
         data['0'] = "Illegal character detected"
-        noEx = False      
+        noEx = False     
+        ''' 
 
     if not noEx:
         return data
@@ -100,6 +103,7 @@ def tryRegister(Acc, Pwd, ConPwd, Phone):
     cursor = db.cursor()
     print(cursor)
     cursor.execute(query1)
+    #error here no such column username
 
     row = cursor.fetchall()
     print(row)
