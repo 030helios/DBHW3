@@ -212,12 +212,32 @@ $("#SearchShopOrderbtn").bind("click", function () {
     })
 })
 
-$("#searchShopWrap").on("click", ".DelOrderBtn", function () {
+$("#searchWrap").on("click", ".DelOrderBtn", function () {
     var data = {
         OID: this.id
     }
     $.ajax({
         url: '/_DelOrder',
+        type: 'GET',
+        data: data,
+        beforeSend: function () {
+        },
+        success: function (result) {
+            alert(result.data)
+            location.reload();
+        },
+        complete: function () {
+        },
+        error: function () {
+        }
+    })
+})
+$("#searchWrap").on("click", ".DoneOrderBtn", function () {
+    var data = {
+        OID: this.id
+    }
+    $.ajax({
+        url: '/_DoneOrder',
         type: 'GET',
         data: data,
         beforeSend: function () {
