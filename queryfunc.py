@@ -13,7 +13,7 @@ def tryLogin(Acc, pwd):
 
     data = {'Passed' : False, 'Phone' : ''}
 
-    if prevent(Acc) == False or prevent(pwd) == True:
+    if prevent(Acc) == False or prevent(pwd) == False:
         print("Not passed")
         return data        
     
@@ -388,7 +388,11 @@ def AmountChange(Shop, Amount):
 def searchShopOrderList(Shop,Status):
     import sqlite3
     data = {'data':[]}
-    query1 = \
+
+    print(Shop)
+    print(Status)
+
+    query = \
     "select ID, stat, time_start, time_end, shopname, order_amount, price\
     from (order_ natural join shop)\
     where "
@@ -396,10 +400,12 @@ def searchShopOrderList(Shop,Status):
         query += "shopname like '%" + str(Shop) + "%' and  "
     if Status != "All":
         query += "stat = '" + str(Status) + "' and  "
-    query1 = query1[0:-6]
+    query = query[0:-6]
+
+    print(query)
 
     db = sqlite3.connect("data.db")
-    cursor1 = db.execute(query1)
+    cursor1 = db.execute(query)
 
     for row in cursor1:
         insert = []
