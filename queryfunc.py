@@ -524,8 +524,31 @@ def DelOrder(OID):
 def DoneOrder(OID):
     import sqlite3
     data = {"data": ""}
-    query = "select ID\
+    query1 = "select shopname, order_amount\
     from order_\
     where ID = '" + str(OID) + "'"
+
+    db = sqlite3.connect("data.db")
+    cursor = db.execute(query1)
+    row = cursor.fetchone()
+
+    shop = str(row[0])
+    amount = int(row[1])
+
+    query2 = "select amount\
+    from shop\
+    where shopname = '" + shop + "'"
+
+    cursor = db.execute(query2)
+    row = cursor.fetchone()
+
+    remain = int(row[0])
+    result = remain - amount
+
+    query3 = "update shop\
+    set amount = " + str(result) + " where shopname = '" + shop + "'" 
+    cursor = db.execute(query3)
+    db.commit()
+    data["data"] = "Amount succesfully changed"
 
     return data
