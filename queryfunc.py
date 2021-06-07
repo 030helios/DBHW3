@@ -159,7 +159,6 @@ def tryRegisterShop(Shop,City,Price,Amount,name):
     if Amount.isdigit() == False:
         data['3'] = "Invalid format"
         noEx = False
-    #error name target is not defined
     if prevent(Shop) == False:
         data['0'] = "Illegal character detected"
         noEx = False        
@@ -520,4 +519,13 @@ def DelOrder(OID):
     cursor = db.execute(query1)
     db.commit()
     data["data"] = "Order successfully deleted"
+    return data
+
+def DoneOrder(OID):
+    import sqlite3
+    data = {"data": ""}
+    query = "select ID\
+    from order_\
+    where ID = '" + str(OID) + "'"
+
     return data
