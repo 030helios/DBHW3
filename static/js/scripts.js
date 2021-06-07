@@ -50,7 +50,7 @@ $("#RegisterBtn").bind("click", function () {
             $("nobr").remove('#errMsg');
         },
         success: function (result) {
-            if (result[0] == 'Register success!'){
+            if (result[0] == 'Register success!') {
                 alert(result[0]);
                 window.location = '/';
             }
@@ -86,7 +86,7 @@ $("#SearchShopListbtn").bind("click", function () {
         LowPrice: LowPrice,
         HighPrice: HighPrice,
         Amount: Amount,
-        WorkOnly:WorkOnly
+        WorkOnly: WorkOnly
     }
     $.ajax({
         url: '/_searchShopList',
@@ -131,7 +131,7 @@ $("#SearchMyOrderbtn").bind("click", function () {
     const form = document.forms["OrderSelect"];
     const Status = form.elements.Status.value;
     var data = {
-        Status:Status
+        Status: Status
     }
     $.ajax({
         url: '/_searchMyOrderList',
@@ -173,8 +173,8 @@ $("#SearchShopOrderbtn").bind("click", function () {
     const Status = form.elements.Status.value;
     const Shop = form.elements.Shop.value;
     var data = {
-        Status:Status,
-        Shop:Shop
+        Status: Status,
+        Shop: Shop
     }
     $.ajax({
         url: '/_searchShopOrderList',
@@ -232,7 +232,7 @@ $(".DelOrderBtn").bind("click", function () {
         }
     })
 })
-$(".OrderBtn").bind("click", function () {
+$("#searchShopWrap").on("click", ".OrderBtn", function () {
     var data = {
         Shop: this.id,
         Amount:document.getElementById('_'+this.id).value
@@ -276,7 +276,7 @@ $("#RegisterShopBtn").bind("click", function () {
             $("nobr").remove('#errMsg');
         },
         success: function (result) {
-            if (result[0] == 'Register Success'){
+            if (result[0] == 'Register Success') {
                 alert(result[0]);
                 location.reload();
             }

@@ -400,6 +400,7 @@ def searchMyOrderList(Acc,Status):
         query += " and stat = '" + str(Status) + "'"
 
     db = sqlite3.connect("data.db")
+    #error sqlite3.OperationalError: near "All": syntax error
     cursor = db.execute(query)
 
     for row in cursor:
@@ -435,6 +436,7 @@ def searchShopOrderList(Shop,Status):
     print(query)
 
     db = sqlite3.connect("data.db")
+    #error sqlite3.OperationalError: near "shop": syntax error
     cursor1 = db.execute(query)
 
     for row in cursor1:
@@ -485,7 +487,7 @@ def Order(Shop,Amount):
         data["data"] = "Amount is larger than the inventory of the shop"
         return data
     
-    data = "Successfully ordered"
+    data["data"] = "Successfully ordered"
 
     '''change = inventory - int(Amount)
 
