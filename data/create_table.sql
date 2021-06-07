@@ -1,10 +1,11 @@
 create table shop(
+    ID char(5) not null
     shopname varchar(20) not null,
     city varchar(20) not null,
     shopowner varchar(20) not null,
     price int not null,
     amount int not null,
-    primary key (shopname)
+    primary key (ID, shopname)
 );
 
 create table employee(
@@ -14,10 +15,11 @@ create table employee(
 );
 
 create table user(
+    ID char(7) not null,
     username varchar(20) not null,
     pwd char(32) not null,
     phone char(10) not null,
-    primary key (username)
+    primary key (ID, username)
 );
 
 create table order_(
@@ -28,7 +30,7 @@ create table order_(
     time_start varchar(20) not null,
     time_end varchar(20) not null,
     shopname varchar(20) not null,
-    amount int not null,
+    order_amount int not null,
     primary key (ID)
 );
 
