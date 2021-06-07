@@ -137,10 +137,11 @@ def myOrder():
 
 @app.route('/_searchMyOrderList', methods=['GET'])
 def _searchMyOrderList():
-    from queryfunc import searchShopOrderList
+    from queryfunc import searchMyOrderList
     Status = request.args.get('Status')
-    data = searchShopOrderList(Shop,Status)
+    data = searchMyOrderList(Acc,Status)
     # return like searchShopList
+    # orders by this Acc
     # OID Status Start End Shop Total Price
     return jsonify(data)
 

@@ -159,6 +159,7 @@ def tryRegisterShop(Shop,City,Price,Amount,name):
     if Amount.isdigit() == False:
         data['3'] = "Invalid format"
         noEx = False
+    #error name target is not defined
     if target(Shop) == False:
         data['0'] = "Illegal character detected"
         noEx = False        
