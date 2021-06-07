@@ -384,6 +384,35 @@ def AmountChange(Shop, Amount):
     data["data"] = "Amount succesfully changed"
     return data
 
+
+# return like searchShopList
+# orders by this Acc
+# OID Status Start End Shop Total Price
+def searchMyOrderList(Acc,Status):
+    import sqlite3
+    data = {'data':[]}
+    query = \
+    "select ID, stat, time_start, time_end, shopname, order_amount, price\
+    from (order_ natural join shop)\
+    where orderer = '" + str(Acc) + "'"
+
+    if Status != "All":
+        query += " and stat = '" + str(Status) + "'"
+
+    db = sqlite3.connect("data.db")
+    cursor = db.execute(query)
+
+    for row in cursor:
+        insert = []
+        for i in range(len(row) - 1):
+            insert.append(row[i])
+        price = int(row[-1]) * int(row[-2])
+        insert.append(price)
+        data['data'].append(insert)
+
+    return data
+
+
 # return like searchShopList
 # OID Status Start End Shop Total Price
 def searchShopOrderList(Shop,Status):
@@ -485,3 +514,8 @@ def DelOrder(OID):
 
     query1 = "delete from order_\
     where ID = '" + str(OID) + "'"
+
+    cursor = db.execute(query1)
+    db.commit()
+    data["data"] = "Order successfully deleted"
+    return data
