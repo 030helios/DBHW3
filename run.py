@@ -179,3 +179,11 @@ def _DelOrder():
     data = DelOrder(OID)
     # return message: success or fail and why
     return jsonify(data)
+
+@app.route('/_DoneOrder', methods=['GET'])
+def _DoneOrder():
+    from queryfunc import DoneOrder
+    OID = request.args.get('OID')
+    data = DoneOrder(OID)
+    # return message: success or fail and why
+    return jsonify(data)

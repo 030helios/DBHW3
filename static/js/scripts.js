@@ -212,7 +212,7 @@ $("#SearchShopOrderbtn").bind("click", function () {
     })
 })
 
-$(".DelOrderBtn").bind("click", function () {
+$("#searchShopWrap").on("click", ".DelOrderBtn", function () {
     var data = {
         OID: this.id
     }
