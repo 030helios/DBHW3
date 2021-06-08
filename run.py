@@ -159,7 +159,7 @@ def shopOrder():
         return render_template('login.html')
     from queryfunc import getAccShops
     Shops = getAccShops(Acc)
-    #return all Shops in a list
+    #return all Shops which Acc works in in a list
     Status = ['All','Not Finished','Finished','Cancelled']
     return render_template('shopOrder.html',Status=Status,Shops=Shops)
 
