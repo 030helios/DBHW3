@@ -391,16 +391,20 @@ def searchMyOrderList(Acc,Status):
     import sqlite3
     data = {'data':[]}
     query = \
-    "select ID, stat, time_start, time_end, shopname, order_amount, price\
-    from (order_ natural join shop)\
+    "select orderID, stat, time_start, time_end, shopname, order_amount, price\
+    from order_ natural join shop\
     where orderer = '" + str(Acc) + "'"
 
     if Status != "All":
         query += " and stat = '" + str(Status) + "'"
 
+    print(query)
+
     db = sqlite3.connect("data.db")
     #error sqlite3.OperationalError: near "All": syntax error
     cursor = db.execute(query)
+
+    print(cursor)
 
     for row in cursor:
         insert = []
@@ -409,6 +413,8 @@ def searchMyOrderList(Acc,Status):
         price = int(row[-1]) * int(row[-2])
         insert.append(price)
         data['data'].append(insert)
+
+    print(data)
 
     return data
 
@@ -423,11 +429,11 @@ def searchShopOrderList(Shop,Status):
     print(Status)
 
     query = \
-    "select ID, stat, time_start, time_end, shopname, order_amount, price\
-    from (order_ natural join shop)\
+    "select orderID, stat, time_start, time_end, shopname, order_amount, price\
+    from order_ natural join shop\
     where "
     if Shop != "All":
-        query += "shopname like '%" + str(Shop) + "%' and  "
+        query += "shopname = '" + str(Shop) + "' and  "
     if Status != "All":
         query += "stat = '" + str(Status) + "' and  "
     query = query[0:-6]
@@ -445,6 +451,8 @@ def searchShopOrderList(Shop,Status):
         price = int(row[-1]) * int(row[-2])
         insert.append(price)
         data['data'].append(insert)
+
+    print(data)
 
     return data
 
@@ -488,17 +496,19 @@ def Order(Shop,Amount):
         data["data"] = "Amount is larger than the inventory of the shop"
         return data
 
-    query2 = 'select count (distinct ID)\
-    from order'
+    query2 = 'select count (distinct orderID)\
+    from order_'
     cursor = db.execute(query2)
     row = cursor.fetchone()
     OID = row[0] + 1
 
+    print(OID)
+
     t = time.localtime()
     time_start = time.strftime("%Y_%m_%d_%H_%M_%S")
     
-    query3 = "insert into user\
-    values('" + OID + "','Not Finished','" + "" + "','" + "" + "','" + str(time_start) + "','" + "" + "','" + str(Shop) + "'," + str(Amount) + ")"
+    query3 = "insert into order_\
+    values(" + str(OID) + ",'Not Finished','" + "" + "','" + "" + "','" + str(time_start) + "','" + "" + "','" + str(Shop) + "'," + str(Amount) + ")"
     print(query3)
 
     cursor = db.execute(query3)
@@ -513,9 +523,9 @@ def DelOrder(OID):
     import sqlite3
     import time
     data = {"data": ""}
-    query = "select ID\
+    query = "select orderID\
     from order_\
-    where ID = " + str(OID) + ""
+    where orderID = " + str(OID) + ""
 
     db = sqlite3.connect("data.db")
     cursor = db.execute(query)
@@ -527,16 +537,16 @@ def DelOrder(OID):
     t = time.localtime()
     time_end = time.strftime("%Y_%m_%d_%H_%M_%S")
 
-    query1 = "update order\
+    query1 = "update order_\
     set stat = '" + "'Cancelled'\
-    where ID = " + str(OID) + ""
+    where orderID = " + str(OID) + ""
 
     cursor = db.execute(query1)
     db.commit()
 
-    query2 = "update order\
+    query2 = "update order_\
     set time_end = '" + str(time_end) + "'\
-    where ID = " + str(OID) + ""
+    where orderID = " + str(OID) + ""
 
     cursor = db.execute(query2)
     db.commit()
@@ -550,7 +560,7 @@ def DoneOrder(OID):
     data = {"data": ""}
     query1 = "select shopname, order_amount\
     from order_\
-    where ID = '" + str(OID) + "'"
+    where orderID = '" + str(OID) + "'"
 
     db = sqlite3.connect("data.db")
     cursor = db.execute(query1)
@@ -577,16 +587,16 @@ def DoneOrder(OID):
     t = time.localtime()
     time_end = time.strftime("%Y_%m_%d_%H_%M_%S")
 
-    query4 = "update order\
+    query4 = "update order_\
     set stat = '" + "'Finished'\
-    where ID = " + str(OID) + ""
+    where orderID = " + str(OID) + ""
 
     cursor = db.execute(query4)
     db.commit()
 
-    query5 = "update order\
+    query5 = "update order_\
     set time_end = '" + str(time_end) + "'\
-    where ID = " + str(OID) + ""
+    where orderID = " + str(OID) + ""
 
     cursor = db.execute(query5)
     db.commit() 
@@ -606,7 +616,7 @@ def DoneAllOrder(OIDs):
     for OID in OIDs:
         query_ = "select shopname, order_amount\
         from order_\
-        where ID = " + str(OID)
+        where orderID = " + str(OID)
 
         cursor = db.execute(query_)
         row = cursor.fetchone()
@@ -631,7 +641,7 @@ def DoneAllOrder(OIDs):
     for OID in OIDs:
         query1 = "select shopname, order_amount\
         from order_\
-        where ID = '" + str(OID) + "'"
+        where orderID = '" + str(OID) + "'"
 
         cursor = db.execute(query1)
         row = cursor.fetchone()
@@ -657,16 +667,16 @@ def DoneAllOrder(OIDs):
         t = time.localtime()
         time_end = time.strftime("%Y_%m_%d_%H_%M_%S")
 
-        query4 = "update order\
+        query4 = "update order_\
         set stat = '" + "'Finished'\
-        where ID = " + str(OID) + ""
+        where orderID = " + str(OID) + ""
 
         cursor = db.execute(query4)
         db.commit()
 
-        query5 = "update order\
+        query5 = "update order_\
         set time_end = '" + str(time_end) + "'\
-        where ID = " + str(OID) + ""
+        where orderID = " + str(OID) + ""
 
         cursor = db.execute(query5)
         db.commit() 
@@ -682,9 +692,9 @@ def DelAllOrder(OIDs):
     db = sqlite3.connect("data.db")
 
     for OID in OIDs:
-        query = "select ID\
+        query = "select orderID\
             from order_\
-            where ID = " + str(OID) + ""
+            where orderID = " + str(OID) + ""
 
         cursor = db.execute(query)
         row = cursor.fetchone()
@@ -696,16 +706,16 @@ def DelAllOrder(OIDs):
         t = time.localtime()
         time_end = time.strftime("%Y_%m_%d_%H_%M_%S")
 
-        query1 = "update order\
+        query1 = "update order_\
             set stat = '" + "'Cancelled'\
-            where ID = " + str(OID) + ""
+            where orderID = " + str(OID) + ""
 
         cursor = db.execute(query1)
         db.commit()
 
-        query2 = "update order\
+        query2 = "update order_\
             set time_end = '" + str(time_end) + "'\
-            where ID = " + str(OID) + ""
+            where orderID = " + str(OID) + ""
 
         cursor = db.execute(query2)
         db.commit()
