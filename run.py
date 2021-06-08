@@ -197,7 +197,7 @@ def _DoneAllOrder():
     return jsonify(data)
 
 @app.route('/_DelAllOrder', methods=['GET'])
-def _DoneAllOrder():
+def _DelAllOrder():
     from queryfunc import DelAllOrder
     OIDs = request.args.get('OIDs')
     data = DelOrder(OIDs)
