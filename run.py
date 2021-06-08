@@ -176,7 +176,7 @@ def _Order():
 def _DelOrder():
     from queryfunc import DelOrder
     OID = request.args.get('OID')
-    data = DelOrder(OID)
+    data = DelOrder(Acc,OID)
     # return message: success or fail and why
     return jsonify(data)
 
@@ -184,7 +184,7 @@ def _DelOrder():
 def _DoneOrder():
     from queryfunc import DoneOrder
     OID = request.args.get('OID')
-    data = DoneOrder(OID)
+    data = DoneOrder(Acc,OID)
     # return message: success or fail and why
     return jsonify(data)
 
@@ -192,7 +192,7 @@ def _DoneOrder():
 def _DoneAllOrder():
     from queryfunc import DoneAllOrder
     OIDs = request.args.get('OIDs')
-    data = DoneOrder(OIDs)
+    data = DoneAllOrder(Acc,OIDs)
     # return message: success or fail and why
     return jsonify(data)
 
@@ -200,6 +200,6 @@ def _DoneAllOrder():
 def _DelAllOrder():
     from queryfunc import DelAllOrder
     OIDs = request.args.get('OIDs')
-    data = DelOrder(OIDs)
+    data = DelAllOrder(Acc,OIDs)
     # return message: success or fail and why
     return jsonify(data)
