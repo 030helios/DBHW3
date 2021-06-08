@@ -195,16 +195,25 @@ $("#SearchShopOrderbtn").bind("click", function () {
             </tr></thead>';
             for (var i = 0; i < result.data.length; i++) {
                 insertText += '<tr>';
+                if (result.data[i][1] == "Not Finished") {
+                    insertText += '<label class="switch"><input type="checkbox" id="';
+                    insertText += result.data[i][0];
+                    insertText += '"></label>';
+                }
                 for (var j = 0; j < result.data[i].length; j++) {
                     insertText += '<td>';
                     insertText += result.data[i][j];
                     insertText += '</td>';
                 }
-                insertText += '<td><button type="button" class="DoneOrderBtn" id="';
-                insertText += result.data[i][0];
-                insertText += '">Done</button><button type="button" class="DelOrderBtn" id="';
-                insertText += result.data[i][0];
-                insertText += '">X</button></td></tr>';
+                if (result.data[i][1] == "Not Finished") {
+
+                    insertText += '<td><button type="button" class="DoneOrderBtn" id="';
+                    insertText += result.data[i][0];
+                    insertText += '">Done</button><button type="button" class="DelOrderBtn" id="';
+                    insertText += result.data[i][0];
+                    insertText += '">X</button></td>';
+                }
+                insertText += '</tr>';
             }
             insertText += '</table>';
             $('#searchWrap').append(insertText);
@@ -255,7 +264,7 @@ $("#searchWrap").on("click", ".DoneOrderBtn", function () {
 $("#searchShopWrap").on("click", ".OrderBtn", function () {
     var data = {
         Shop: this.id,
-        Amount:document.getElementById('_'+this.id).value
+        Amount: document.getElementById('_' + this.id).value
     }
     $.ajax({
         url: '/_Order',
