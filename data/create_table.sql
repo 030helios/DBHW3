@@ -23,7 +23,7 @@ create table user(
 );
 
 create table order_(
-    ID int not null,
+    orderID int not null,
     stat varchar(20) not null,
     orderer varchar(20) not null,
     seller varchar(20) not null,
