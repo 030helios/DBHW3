@@ -270,7 +270,7 @@ $("#searchWrap").on("click", ".DoneOrderBtn", function () {
         }
     })
 })
-$("#searchWrap").on("click", ".DoneAllOrderBtn", function () {
+$(".DoneAllOrderBtn").bind("click", function () {
     var checkboxes = document.getElementsByName(chkboxName);
     var checkboxesChecked = [];
     // loop over them all
@@ -299,7 +299,7 @@ $("#searchWrap").on("click", ".DoneAllOrderBtn", function () {
         }
     })
 })
-$("#searchWrap").on("click", ".DelAllOrderBtn", function () {
+$(".DelAllOrderBtn").bind("click", function () {
     var checkboxes = document.getElementsByName(chkboxName);
     var checkboxesChecked = [];
     // loop over them all
