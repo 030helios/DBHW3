@@ -157,8 +157,8 @@ def _searchShopOrderList():
 def shopOrder():
     if Acc == '':
         return render_template('login.html')
-    from queryfunc import getShops
-    Shops = getShops()
+    from queryfunc import getAccShops
+    Shops = getAccShops(Acc)
     #return all Shops in a list
     Status = ['All','Not Finished','Finished','Cancelled']
     return render_template('shopOrder.html',Status=Status,Shops=Shops)

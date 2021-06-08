@@ -151,13 +151,20 @@ $("#SearchMyOrderbtn").bind("click", function () {
             <td>Action</td>\
             </tr></thead>';
             for (var i = 0; i < result.data.length; i++) {
-                insertText += '<tr>';
-                for (var j = 0; j < result.data[i].length; j++) {
+                insertText += '<tr><td>';
+                if (result.data[i][1] == "Not Finished") {
+                    insertText += '<label class="switch"><input type="checkbox" id="';
+                    insertText += result.data[i][0];
+                    insertText += '"></label>';
+                }
+                insertText += result.data[i][0];
+                insertText += '</td>';
+                for (var j = 1; j < result.data[i].length; j++) {
                     insertText += '<td>';
                     insertText += result.data[i][j];
                     insertText += '</td>';
                 }
-                insertText += '<td><button type="button" class="DelMyOrderBtn" id="';
+                insertText += '<td><button type="button" class="DelOrderBtn" id="';
                 insertText += result.data[i][0];
                 insertText += '">X</button></td></tr>';
             }
@@ -194,13 +201,15 @@ $("#SearchShopOrderbtn").bind("click", function () {
             <td>Action</td>\
             </tr></thead>';
             for (var i = 0; i < result.data.length; i++) {
-                insertText += '<tr>';
+                insertText += '<tr><td>';
                 if (result.data[i][1] == "Not Finished") {
                     insertText += '<label class="switch"><input type="checkbox" id="';
                     insertText += result.data[i][0];
                     insertText += '"></label>';
                 }
-                for (var j = 0; j < result.data[i].length; j++) {
+                insertText += result.data[i][0];
+                insertText += '</td>';
+                for (var j = 1; j < result.data[i].length; j++) {
                     insertText += '<td>';
                     insertText += result.data[i][j];
                     insertText += '</td>';
