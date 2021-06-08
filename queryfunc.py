@@ -467,17 +467,19 @@ def getShops():
 # return message: success or fail and why
 def Order(Shop,Amount):
     import sqlite3
+    import time
     data = {"data": ""}
     if Amount.isdigit() == False or int(Amount) < 0:
         data["data"] = "Illegal input Amount"
         return data
     
-    query = "select amount\
+    query1 = "select amount\
     from shop\
     where shopname = '" + str(Shop) + "'"
+    print(query1)
 
     db = sqlite3.connect("data.db")
-    cursor = db.execute(query)
+    cursor = db.execute(query1)
     row = cursor.fetchone()
 
     inventory = int(row[0])
@@ -485,26 +487,35 @@ def Order(Shop,Amount):
     if int(Amount) > inventory:
         data["data"] = "Amount is larger than the inventory of the shop"
         return data
+
+    query2 = 'select count (distinct ID)\
+    from order'
+    cursor = db.execute(query2)
+    row = cursor.fetchone()
+    OID = row[0] + 1
+
+    t = time.localtime()
+    time_start = time.strftime("%Y_%m_%d_%H_%M_%S")
     
-    data["data"] = "Successfully ordered"
+    query3 = "insert into user\
+    values('" + OID + "','Not Finished','" + "" + "','" + "" + "','" + str(time_start) + "','" + "" + "','" + str(Shop) + "'," + str(Amount) + ")"
+    print(query3)
 
-    '''change = inventory - int(Amount)
-
-    query = "update shop\
-    set amount = " + str(change) + " where shopname = '" + str(Shop) + "'" 
-    cursor = db.execute(query)
+    cursor = db.execute(query3)
     db.commit()
-    data["data"] = "Amount succesfully changed"'''
+
+    data["data"] = "Successfully ordered"
 
     return data
 
 # return message: success or fail and why
 def DelOrder(OID):
     import sqlite3
+    import time
     data = {"data": ""}
     query = "select ID\
     from order_\
-    where ID = '" + str(OID) + "'"
+    where ID = " + str(OID) + ""
 
     db = sqlite3.connect("data.db")
     cursor = db.execute(query)
@@ -513,16 +524,29 @@ def DelOrder(OID):
     if row == None:
         data["data"] = "Order doesn't exist"
 
-    query1 = "delete from order_\
-    where ID = '" + str(OID) + "'"
+    t = time.localtime()
+    time_end = time.strftime("%Y_%m_%d_%H_%M_%S")
+
+    query1 = "update order\
+    set stat = '" + "'Cancelled'\
+    where ID = " + str(OID) + ""
 
     cursor = db.execute(query1)
     db.commit()
-    data["data"] = "Order successfully deleted"
+
+    query2 = "update order\
+    set time_end = '" + str(time_end) + "'\
+    where ID = " + str(OID) + ""
+
+    cursor = db.execute(query2)
+    db.commit()
+
+    data["data"] = "Order successfully cancelled"
     return data
 
 def DoneOrder(OID):
     import sqlite3
+    import time
     data = {"data": ""}
     query1 = "select shopname, order_amount\
     from order_\
@@ -549,6 +573,142 @@ def DoneOrder(OID):
     set amount = " + str(result) + " where shopname = '" + shop + "'" 
     cursor = db.execute(query3)
     db.commit()
-    data["data"] = "Amount succesfully changed"
 
+    t = time.localtime()
+    time_end = time.strftime("%Y_%m_%d_%H_%M_%S")
+
+    query4 = "update order\
+    set stat = '" + "'Finished'\
+    where ID = " + str(OID) + ""
+
+    cursor = db.execute(query4)
+    db.commit()
+
+    query5 = "update order\
+    set time_end = '" + str(time_end) + "'\
+    where ID = " + str(OID) + ""
+
+    cursor = db.execute(query5)
+    db.commit() 
+
+    data["data"] = "Order successfully done"
+
+    return data
+
+def DoneAllOrder(OIDs):
+    import sqlite3
+    import time
+    data = {"data": ""}
+    db = sqlite3.connect("data.db")
+
+    amounts = {}
+
+    for OID in OIDs:
+        query_ = "select shopname, order_amount\
+        from order_\
+        where ID = " + str(OID)
+
+        cursor = db.execute(query_)
+        row = cursor.fetchone()
+
+        if amounts.get(str(row[0])):
+            amounts[str(row[0])] += int(row[1])
+        else:
+            amounts[str(row[0])] = int(row[1])
+
+    for shop in amounts:
+        query_ = "select amount\
+        from shop\
+        where ID = '" + str(shop) + "'"
+
+        cursor = db.execute(query_)
+        row = cursor.fetchone()
+
+        if amount[shop] > int(row[0]):
+            data["data"] = "Amount of the orders of " + shop + " exceeds its inventory"
+            return data
+
+    for OID in OIDs:
+        query1 = "select shopname, order_amount\
+        from order_\
+        where ID = '" + str(OID) + "'"
+
+        cursor = db.execute(query1)
+        row = cursor.fetchone()
+
+        shop = str(row[0])
+        amount = int(row[1])
+
+        query2 = "select amount\
+        from shop\
+        where shopname = '" + shop + "'"
+
+        cursor = db.execute(query2)
+        row = cursor.fetchone()
+
+        remain = int(row[0])
+        result = remain - amount
+
+        query3 = "update shop\
+        set amount = " + str(result) + " where shopname = '" + shop + "'" 
+        cursor = db.execute(query3)
+        db.commit()
+
+        t = time.localtime()
+        time_end = time.strftime("%Y_%m_%d_%H_%M_%S")
+
+        query4 = "update order\
+        set stat = '" + "'Finished'\
+        where ID = " + str(OID) + ""
+
+        cursor = db.execute(query4)
+        db.commit()
+
+        query5 = "update order\
+        set time_end = '" + str(time_end) + "'\
+        where ID = " + str(OID) + ""
+
+        cursor = db.execute(query5)
+        db.commit() 
+
+    data["data"] = "Orders all succesfully done"
+
+    return data
+
+def DelAllOrder(OIDs):
+    import sqlite3
+    import time
+    data = {"data": ""}
+    db = sqlite3.connect("data.db")
+
+    for OID in OIDs:
+        query = "select ID\
+            from order_\
+            where ID = " + str(OID) + ""
+
+        cursor = db.execute(query)
+        row = cursor.fetchone()
+
+        if row == None:
+            data["data"] = "Order " + str(OID) + " doesn't exist"
+            break
+
+        t = time.localtime()
+        time_end = time.strftime("%Y_%m_%d_%H_%M_%S")
+
+        query1 = "update order\
+            set stat = '" + "'Cancelled'\
+            where ID = " + str(OID) + ""
+
+        cursor = db.execute(query1)
+        db.commit()
+
+        query2 = "update order\
+            set time_end = '" + str(time_end) + "'\
+            where ID = " + str(OID) + ""
+
+        cursor = db.execute(query2)
+        db.commit()
+
+    data["data"] = "Orders all successfully cancelled"
     return data
