@@ -473,10 +473,12 @@ def getShops():
     return data
 
 # return message: success or fail and why
-def Order(Shop,Amount):
+def Order(Acc, Shop, Amount):
     import sqlite3
     import time
+
     data = {"data": ""}
+
     if Amount.isdigit() == False or int(Amount) < 0:
         data["data"] = "Illegal input Amount"
         return data
@@ -508,7 +510,7 @@ def Order(Shop,Amount):
     time_start = time.strftime("%Y_%m_%d_%H_%M_%S")
     
     query3 = "insert into order_\
-    values(" + str(OID) + ",'Not Finished','" + "" + "','" + "" + "','" + str(time_start) + "','" + "" + "','" + str(Shop) + "'," + str(Amount) + ")"
+    values(" + str(OID) + ",'Not Finished','" + str(Acc) + "','" + "" + "','" + str(time_start) + "','" + "" + "','" + str(Shop) + "'," + str(Amount) + ")"
     print(query3)
 
     cursor = db.execute(query3)
@@ -519,7 +521,7 @@ def Order(Shop,Amount):
     return data
 
 # return message: success or fail and why
-def DelOrder(OID):
+def DelOrder(Acc, OID):
     import sqlite3
     import time
     data = {"data": ""}
@@ -551,10 +553,17 @@ def DelOrder(OID):
     cursor = db.execute(query2)
     db.commit()
 
+    query3 = "update order_\
+    set seller = '" + str(Acc) + "'\
+    where orderID = " + str(OID) + ""
+
+    cursor = db.execute(query3)
+    db.commit()
+
     data["data"] = "Order successfully cancelled"
     return data
 
-def DoneOrder(OID):
+def DoneOrder(Acc, OID):
     import sqlite3
     import time
     data = {"data": ""}
@@ -601,11 +610,18 @@ def DoneOrder(OID):
     cursor = db.execute(query5)
     db.commit() 
 
+    query6 = "update order_\
+    set seller = '" + str(Acc) + "'\
+    where orderID = " + str(OID) + ""
+
+    cursor = db.execute(query6)
+    db.commit()
+
     data["data"] = "Order successfully done"
 
     return data
 
-def DoneAllOrder(OIDs):
+def DoneAllOrder(Acc, OIDs):
     import sqlite3
     import time
     data = {"data": ""}
@@ -681,11 +697,18 @@ def DoneAllOrder(OIDs):
         cursor = db.execute(query5)
         db.commit() 
 
+        query6 = "update order_\
+            set seller = '" + str(Acc) + "'\
+            where orderID = " + str(OID) + ""
+
+        cursor = db.execute(query6)
+        db.commit()
+
     data["data"] = "Orders all succesfully done"
 
     return data
 
-def DelAllOrder(OIDs):
+def DelAllOrder(Acc, OIDs):
     import sqlite3
     import time
     data = {"data": ""}
@@ -718,6 +741,13 @@ def DelAllOrder(OIDs):
             where orderID = " + str(OID) + ""
 
         cursor = db.execute(query2)
+        db.commit()
+
+        query3 = "update order_\
+            set seller = '" + str(Acc) + "'\
+            where orderID = " + str(OID) + ""
+
+        cursor = db.execute(query3)
         db.commit()
 
     data["data"] = "Orders all successfully cancelled"
