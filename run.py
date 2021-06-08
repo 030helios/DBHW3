@@ -168,7 +168,7 @@ def _Order():
     from queryfunc import Order
     Amount = request.args.get('Amount')
     _Shop = request.args.get('Shop')
-    data = Order(_Shop,Amount)
+    data = Order(Acc,_Shop,Amount)
     # return message: success or fail and why
     return jsonify(data)
 
