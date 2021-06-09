@@ -688,35 +688,8 @@ def DoneAllOrder(Acc, OIDs):
     print("DoneAllOrder")
     print(OIDs)
 
-    amounts = {}
-
     for OID in OIDs:
         print(OID)
-        query_ = "select shopname, order_amount\
-        from order_\
-        where orderID = " + str(OID)
-
-        cursor = db.execute(query_)
-        row = cursor.fetchone()
-
-        if amounts.get(str(row[0])):
-            amounts[str(row[0])] += int(row[1])
-        else:
-            amounts[str(row[0])] = int(row[1])
-
-    for shop in amounts:
-        query_ = "select amount\
-        from shop\
-        where ID = '" + str(shop) + "'"
-
-        cursor = db.execute(query_)
-        row = cursor.fetchone()
-
-        if amount[shop] > int(row[0]):
-            data["data"] = "Amount of the orders of " + shop + " exceeds its inventory"
-            return data
-
-    for OID in OIDs:
         query1 = "select shopname, order_amount\
         from order_\
         where orderID = " + str(OID) + ""
@@ -786,12 +759,15 @@ def DelAllOrder(Acc, OIDs):
     for OID in OIDs:
         print(OID)
 
-        query = "select orderID\
+        query = "select orderID, stat, shopname, order_amount\
             from order_\
             where orderID = " + str(OID) + ""
 
         cursor = db.execute(query)
         row = cursor.fetchone()
+
+        shop = str(row[2])
+        amount = int(row[3])
 
         if row == None:
             data["data"] = "Order " + str(OID) + " doesn't exist"
@@ -827,6 +803,21 @@ def DelAllOrder(Acc, OIDs):
             where orderID = " + str(OID) + ""
 
         cursor = db.execute(query3)
+        db.commit()
+
+        query4 = "select amount\
+        from shop\
+        where shopname = '" + shop + "'"
+
+        cursor = db.execute(query4)
+        row = cursor.fetchone()
+
+        remain = int(row[0])
+        result = remain + amount
+
+        query5 = "update shop\
+        set amount = " + str(result) + " where shopname = '" + shop + "'" 
+        cursor = db.execute(query5)
         db.commit()
 
     data["data"] = "Orders all successfully cancelled"
