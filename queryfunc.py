@@ -468,6 +468,7 @@ def getAccShops(Acc):
     cursor = db.execute(query)
 
     for row in cursor:
+        print(row)
         data.append(str(row[0]))
     
     return data
@@ -560,6 +561,10 @@ def DelOrder(Acc, OID):
         data["data"] = "The order number " + str(OID) + " is already cancelled"
         return data
 
+    if str(row[1]) == "Finished":
+        data["data"] = "Finished order can't be cancelled"
+        return data
+
     t = time.localtime()
     time_end = time.strftime("%Y_%m_%d_%H_%M_%S")
 
@@ -586,6 +591,7 @@ def DelOrder(Acc, OID):
 
     data["data"] = "Order successfully cancelled"
     return data
+
 
 def DoneOrder(Acc, OID):
     import sqlite3
@@ -621,7 +627,7 @@ def DoneOrder(Acc, OID):
     time_end = time.strftime("%Y_%m_%d_%H_%M_%S")
 
     query4 = "update order_\
-    set stat = '" + "'Finished'\
+    set stat = " + "'Finished'\
     where orderID = " + str(OID) + ""
 
     cursor = db.execute(query4)
@@ -645,15 +651,20 @@ def DoneOrder(Acc, OID):
 
     return data
 
+
 def DoneAllOrder(Acc, OIDs):
     import sqlite3
     import time
     data = {"data": ""}
     db = sqlite3.connect("data.db")
 
+    print("DoneAllOrder")
+    print(OIDs)
+
     amounts = {}
 
     for OID in OIDs:
+        print(OID)
         query_ = "select shopname, order_amount\
         from order_\
         where orderID = " + str(OID)
@@ -711,6 +722,8 @@ def DoneAllOrder(Acc, OIDs):
         set stat = " + "'Finished'\
         where orderID = " + str(OID) + ""
 
+        print(query4)
+
         cursor = db.execute(query4)
         db.commit()
 
@@ -732,13 +745,20 @@ def DoneAllOrder(Acc, OIDs):
 
     return data
 
+
 def DelAllOrder(Acc, OIDs):
     import sqlite3
     import time
+
     data = {"data": ""}
     db = sqlite3.connect("data.db")
 
+    print("DelAllOrder")
+    print(OIDs)
+
     for OID in OIDs:
+        print(OID)
+
         query = "select orderID\
             from order_\
             where orderID = " + str(OID) + ""
@@ -752,6 +772,10 @@ def DelAllOrder(Acc, OIDs):
         
         if str(row[1]) == "Cancelled":
             data["data"] = "The order number " + str(OID) + " is already cancelled"
+            return data
+
+        if str(row[1]) == "Finished":
+            data["data"] = "Finished order number " + str(OID) + " can't be cancelled"
             return data
 
         t = time.localtime()
