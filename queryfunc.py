@@ -390,13 +390,15 @@ def AmountChange(Shop, Amount):
 def searchMyOrderList(Acc,Status):
     import sqlite3
     data = {'data':[]}
+
     query = \
-    "select orderID, stat, time_start, time_end, shopname, order_amount, price\
-    from order_ natural join shop\
-    where orderer = '" + str(Acc) + "'"
+    "select orderID, stat, time_start, time_end, shopname, order_amount, order_price\
+    from order_\
+    where orderer = '" + str(Acc) + "'         "
 
     if Status != "All":
-        query += " and stat = '" + str(Status) + "'"
+        query += " and stat = '" + str(Status) + "'      "
+    query = query[0:-6]
 
     print(query)
 
@@ -407,9 +409,9 @@ def searchMyOrderList(Acc,Status):
 
     for row in cursor:
         insert = []
-        for i in range(len(row) - 1):
+        for i in range(len(row)):
             insert.append(row[i])
-        price = int(row[-1]) * int(row[-2])
+        price = int(row[-1]) / int(row[-2])
         insert.append(price)
         data['data'].append(insert)
 
@@ -428,9 +430,9 @@ def searchShopOrderList(Shop,Status):
     print(Status)
 
     query = \
-    "select orderID, stat, time_start, time_end, shopname, order_amount, price\
-    from order_ natural join shop\
-    where "
+    "select orderID, stat, time_start, time_end, shopname, order_amount, order_price\
+    from order_\
+    where   "
     if Shop != "All":
         query += "shopname = '" + str(Shop) + "' and  "
     if Status != "All":
@@ -445,9 +447,9 @@ def searchShopOrderList(Shop,Status):
 
     for row in cursor1:
         insert = []
-        for i in range(len(row) - 1):
+        for i in range(len(row)):
             insert.append(row[i])
-        price = int(row[-1]) * int(row[-2])
+        price = int(row[-1]) / int(row[-2])
         insert.append(price)
         data['data'].append(insert)
 
@@ -459,10 +461,25 @@ def searchShopOrderList(Shop,Status):
 def getAccShops(Acc):
     import sqlite3
     data = []
+
+    query_ = \
+    "select distinct shopname\
+    from shop\
+    where shopowner = '" + str(Acc) + "'"
+    
+    db = sqlite3.connect("data.db")
+    cursor = db.execute(query_)
+    row = cursor.fetchone()
+
+    print(row)
+
+    if row != None:
+        data.append(str(row[0]))
+
     query = \
     "select distinct shopname\
-    from shop natural join employee\
-    where username = '" + str(Acc) + "' or shopowner = '" + str(Acc) + "'"
+    from employee\
+    where username = '" + str(Acc) + "'"
 
     db = sqlite3.connect("data.db")
     cursor = db.execute(query)
@@ -470,7 +487,7 @@ def getAccShops(Acc):
     for row in cursor:
         print(row)
         data.append(str(row[0]))
-    
+
     return data
 
 
@@ -501,7 +518,7 @@ def Order(Acc, Shop, Amount):
         data["data"] = "Illegal input Amount"
         return data
     
-    query1 = "select amount\
+    query1 = "select amount, price\
     from shop\
     where shopname = '" + str(Shop) + "'"
     print(query1)
@@ -511,10 +528,18 @@ def Order(Acc, Shop, Amount):
     row = cursor.fetchone()
 
     inventory = int(row[0])
+    price = int(row[1])
 
     if int(Amount) > inventory:
         data["data"] = "Amount is larger than the inventory of the shop"
         return data
+
+    result = inventory - int(Amount)
+
+    query_ = "update shop\
+    set amount = " + str(result) + " where shopname = '" + str(Shop) + "'" 
+    cursor = db.execute(query_)
+    db.commit()
 
     query2 = 'select count (distinct orderID)\
     from order_'
@@ -528,7 +553,7 @@ def Order(Acc, Shop, Amount):
     time_start = time.strftime("%Y_%m_%d_%H_%M_%S")
     
     query3 = "insert into order_\
-    values(" + str(OID) + ",'Not Finished','" + str(Acc) + "','" + "" + "','" + str(time_start) + "','" + "" + "','" + str(Shop) + "'," + str(Amount) + ")"
+    values(" + str(OID) + ",'Not Finished','" + str(Acc) + "','" + "" + "','" + str(time_start) + "','" + "" + "','" + str(Shop) + "'," + str(Amount) + "," + str(int(Amount) * price) + ")"
     print(query3)
 
     cursor = db.execute(query3)
@@ -543,7 +568,7 @@ def DelOrder(Acc, OID):
     import sqlite3
     import time
     data = {"data": ""}
-    query = "select orderID, stat\
+    query = "select orderID, stat, order_amount, shopname\
     from order_\
     where orderID = " + str(OID) + ""
 
@@ -552,6 +577,8 @@ def DelOrder(Acc, OID):
     row = cursor.fetchone()
 
     print(row)
+    amount = int(row[2])
+    shop = str(row[3])
 
     if row == None:
         data["data"] = "Order doesn't exist"
@@ -589,6 +616,21 @@ def DelOrder(Acc, OID):
     cursor = db.execute(query3)
     db.commit()
 
+    query4 = "select amount\
+    from shop\
+    where shopname = '" + shop + "'"
+
+    cursor = db.execute(query4)
+    row = cursor.fetchone()
+
+    remain = int(row[0])
+    result = remain + amount
+
+    query5 = "update shop\
+    set amount = " + str(result) + " where shopname = '" + shop + "'" 
+    cursor = db.execute(query5)
+    db.commit()
+
     data["data"] = "Order successfully cancelled"
     return data
 
@@ -607,21 +649,6 @@ def DoneOrder(Acc, OID):
 
     shop = str(row[0])
     amount = int(row[1])
-
-    query2 = "select amount\
-    from shop\
-    where shopname = '" + shop + "'"
-
-    cursor = db.execute(query2)
-    row = cursor.fetchone()
-
-    remain = int(row[0])
-    result = remain - amount
-
-    query3 = "update shop\
-    set amount = " + str(result) + " where shopname = '" + shop + "'" 
-    cursor = db.execute(query3)
-    db.commit()
 
     t = time.localtime()
     time_end = time.strftime("%Y_%m_%d_%H_%M_%S")
