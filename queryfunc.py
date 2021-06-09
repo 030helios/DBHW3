@@ -401,7 +401,6 @@ def searchMyOrderList(Acc,Status):
     print(query)
 
     db = sqlite3.connect("data.db")
-    #error sqlite3.OperationalError: near "All": syntax error
     cursor = db.execute(query)
 
     print(cursor)
@@ -455,6 +454,24 @@ def searchShopOrderList(Shop,Status):
     print(data)
 
     return data
+
+
+def getAccShops(Acc):
+    import sqlite3
+    data = []
+    query = \
+    "select distinct shopname\
+    from shop natural join employee\
+    where username = '" + str(Acc) + "' or shopowner = '" + str(Acc) + "'"
+
+    db = sqlite3.connect("data.db")
+    cursor = db.execute(query)
+
+    for row in cursor:
+        data.append(str(row[0]))
+    
+    return data
+
 
 #return all Shops in a list
 def getShops():
@@ -525,7 +542,7 @@ def DelOrder(Acc, OID):
     import sqlite3
     import time
     data = {"data": ""}
-    query = "select orderID\
+    query = "select orderID, stat\
     from order_\
     where orderID = " + str(OID) + ""
 
@@ -533,14 +550,21 @@ def DelOrder(Acc, OID):
     cursor = db.execute(query)
     row = cursor.fetchone()
 
+    print(row)
+
     if row == None:
         data["data"] = "Order doesn't exist"
+        return data
+
+    if str(row[1]) == "Cancelled":
+        data["data"] = "The order number " + str(OID) + " is already cancelled"
+        return data
 
     t = time.localtime()
     time_end = time.strftime("%Y_%m_%d_%H_%M_%S")
 
     query1 = "update order_\
-    set stat = '" + "'Cancelled'\
+    set stat = " + "'Cancelled'\
     where orderID = " + str(OID) + ""
 
     cursor = db.execute(query1)
@@ -569,7 +593,7 @@ def DoneOrder(Acc, OID):
     data = {"data": ""}
     query1 = "select shopname, order_amount\
     from order_\
-    where orderID = '" + str(OID) + "'"
+    where orderID = " + str(OID) + ""
 
     db = sqlite3.connect("data.db")
     cursor = db.execute(query1)
@@ -657,7 +681,7 @@ def DoneAllOrder(Acc, OIDs):
     for OID in OIDs:
         query1 = "select shopname, order_amount\
         from order_\
-        where orderID = '" + str(OID) + "'"
+        where orderID = " + str(OID) + ""
 
         cursor = db.execute(query1)
         row = cursor.fetchone()
@@ -684,7 +708,7 @@ def DoneAllOrder(Acc, OIDs):
         time_end = time.strftime("%Y_%m_%d_%H_%M_%S")
 
         query4 = "update order_\
-        set stat = '" + "'Finished'\
+        set stat = " + "'Finished'\
         where orderID = " + str(OID) + ""
 
         cursor = db.execute(query4)
@@ -724,13 +748,17 @@ def DelAllOrder(Acc, OIDs):
 
         if row == None:
             data["data"] = "Order " + str(OID) + " doesn't exist"
-            break
+            return data
+        
+        if str(row[1]) == "Cancelled":
+            data["data"] = "The order number " + str(OID) + " is already cancelled"
+            return data
 
         t = time.localtime()
         time_end = time.strftime("%Y_%m_%d_%H_%M_%S")
 
         query1 = "update order_\
-            set stat = '" + "'Cancelled'\
+            set stat = " + "'Cancelled'\
             where orderID = " + str(OID) + ""
 
         cursor = db.execute(query1)
