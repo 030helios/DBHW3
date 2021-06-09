@@ -191,6 +191,7 @@ def _DoneOrder():
 @app.route('/_DoneAllOrder', methods=['GET'])
 def _DoneAllOrder():
     from queryfunc import DoneAllOrder
+    print(("here"))
     OIDs = request.args.get('OIDs')
     data = DoneAllOrder(Acc,OIDs)
     # return message: success or fail and why
@@ -199,7 +200,10 @@ def _DoneAllOrder():
 @app.route('/_DelAllOrder', methods=['GET'])
 def _DelAllOrder():
     from queryfunc import DelAllOrder
-    OIDs = request.args.get('OIDs')
+    print(("=============================="))
+    OIDs = request.args.get('OIDs').split()
+    print(OIDs)
+    print(("=============================="))
     data = DelAllOrder(Acc,OIDs)
     # return message: success or fail and why
     return jsonify(data)

@@ -153,8 +153,8 @@ $("#SearchMyOrderbtn").bind("click", function () {
             for (var i = 0; i < result.data.length; i++) {
                 insertText += '<tr><td>';
                 if (result.data[i][1] == "Not Finished") {
-                    insertText += '<label class="switch"><input type="checkbox" id="';
-                    insertText += result.data[i][0];
+                    insertText += '<label class="switch"><input type="checkbox" class="chkboxName" id="';
+                    insertText += result.data[i][0] + '"value="' + result.data[i][0];
                     insertText += '"></label>';
                 }
                 insertText += result.data[i][0];
@@ -203,8 +203,8 @@ $("#SearchShopOrderbtn").bind("click", function () {
             for (var i = 0; i < result.data.length; i++) {
                 insertText += '<tr><td>';
                 if (result.data[i][1] == "Not Finished") {
-                    insertText += '<label class="switch"><input type="checkbox" id="';
-                    insertText += result.data[i][0];
+                    insertText += '<label class="switch"><input type="checkbox" class="chkboxName" id="';
+                    insertText += result.data[i][0] + '"value="' + result.data[i][0];
                     insertText += '"></label>';
                 }
                 insertText += result.data[i][0];
@@ -271,17 +271,13 @@ $("#searchWrap").on("click", ".DoneOrderBtn", function () {
     })
 })
 $(".DoneAllOrderBtn").bind("click", function () {
-    var checkboxes = document.getElementsByName(chkboxName);
-    var checkboxesChecked = [];
-    // loop over them all
-    for (var i=0; i<checkboxes.length; i++) {
-       // And stick the checked ones onto an array...
-       if (checkboxes[i].checked) {
-          checkboxesChecked.push(checkboxes[i].id);
-       }
-    }
+    var checkboxesChecked = "";
+    $("input[type=checkbox]:checked").each(function() {
+        checkboxesChecked+=($(this).val());
+        checkboxesChecked+=" ";
+    });
     var data = {
-        OIDs: checkboxesChecked.length > 0 ? checkboxesChecked : null
+        OIDs: checkboxesChecked
     }
     $.ajax({
         url: '/_DoneAllOrder',
@@ -300,17 +296,13 @@ $(".DoneAllOrderBtn").bind("click", function () {
     })
 })
 $(".DelAllOrderBtn").bind("click", function () {
-    var checkboxes = document.getElementsByName(chkboxName);
-    var checkboxesChecked = [];
-    // loop over them all
-    for (var i=0; i<checkboxes.length; i++) {
-       // And stick the checked ones onto an array...
-       if (checkboxes[i].checked) {
-          checkboxesChecked.push(checkboxes[i].id);
-       }
-    }
+    var checkboxesChecked = "";
+    $("input[type=checkbox]:checked").each(function() {
+        checkboxesChecked+=($(this).val());
+        checkboxesChecked+=" ";
+    });
     var data = {
-        OIDs: checkboxesChecked.length > 0 ? checkboxesChecked : null
+        OIDs: checkboxesChecked
     }
     $.ajax({
         url: '/_DelAllOrder',
