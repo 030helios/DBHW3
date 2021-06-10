@@ -639,7 +639,7 @@ def DoneOrder(Acc, OID):
     import sqlite3
     import time
     data = {"data": ""}
-    query1 = "select shopname, order_amount\
+    query1 = "select shopname, order_amount, stat\
     from order_\
     where orderID = " + str(OID) + ""
 
@@ -649,6 +649,15 @@ def DoneOrder(Acc, OID):
 
     shop = str(row[0])
     amount = int(row[1])
+    stat = str(row[2])
+    
+    if stat == "Cancelled":
+        data["data"] = "The order is already cancelled"
+        return data
+
+    if stat == "Finished":
+        data["data"] = "Finished order can't be cancelled"
+        return data
 
     t = time.localtime()
     time_end = time.strftime("%Y_%m_%d_%H_%M_%S")
@@ -690,7 +699,7 @@ def DoneAllOrder(Acc, OIDs):
 
     for OID in OIDs:
         print(OID)
-        query1 = "select shopname, order_amount\
+        query1 = "select shopname, order_amount, stat\
         from order_\
         where orderID = " + str(OID) + ""
 
@@ -699,6 +708,15 @@ def DoneAllOrder(Acc, OIDs):
 
         shop = str(row[0])
         amount = int(row[1])
+        stat = str(row[2])
+
+        if stat == "Cancelled":
+            data["data"] = "The order number " + str(OID) + " is already cancelled"
+            return data
+
+        if stat == "Finished":
+            data["data"] = "Finished order" + str(OID) + "can't be cancelled"
+            return data
 
         t = time.localtime()
         time_end = time.strftime("%Y_%m_%d_%H_%M_%S")
