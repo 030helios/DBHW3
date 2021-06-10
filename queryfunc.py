@@ -514,7 +514,7 @@ def Order(Acc, Shop, Amount):
 
     data = {"data": ""}
 
-    if Amount.isdigit() == False or int(Amount) < 0:
+    if Amount.isdigit() == False or int(Amount) <= 0:
         data["data"] = "Illegal input Amount"
         return data
     
