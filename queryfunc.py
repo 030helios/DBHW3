@@ -412,7 +412,7 @@ def searchMyOrderList(Acc,Status):
         for i in range(len(row)):
             insert.append(row[i])
         price = int(row[-1]) / int(row[-2])
-        insert.append(price)
+        insert.append(str(int(price)))
         data['data'].append(insert)
 
     print(data)
@@ -450,7 +450,7 @@ def searchShopOrderList(Shop,Status):
         for i in range(len(row)):
             insert.append(row[i])
         price = int(row[-1]) / int(row[-2])
-        insert.append(price)
+        insert.append(str(int(price)))
         data['data'].append(insert)
 
     print(data)
