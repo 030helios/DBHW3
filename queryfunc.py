@@ -392,7 +392,7 @@ def searchMyOrderList(Acc,Status):
     data = {'data':[]}
 
     query = \
-    "select orderID, stat, time_start, time_end, shopname, order_amount, order_price\
+    "select orderID, stat, time_start, orderer, time_end, seller, shopname, order_amount, order_price\
     from order_\
     where orderer = '" + str(Acc) + "'         "
 
@@ -430,7 +430,7 @@ def searchShopOrderList(Shop,Status):
     print(Status)
 
     query = \
-    "select orderID, stat, time_start, time_end, shopname, order_amount, order_price\
+    "select orderID, stat, time_start, orderer, time_end, seller, shopname, order_amount, order_price\
     from order_\
     where   "
     if Shop != "All":
