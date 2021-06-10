@@ -700,21 +700,6 @@ def DoneAllOrder(Acc, OIDs):
         shop = str(row[0])
         amount = int(row[1])
 
-        query2 = "select amount\
-        from shop\
-        where shopname = '" + shop + "'"
-
-        cursor = db.execute(query2)
-        row = cursor.fetchone()
-
-        remain = int(row[0])
-        result = remain - amount
-
-        query3 = "update shop\
-        set amount = " + str(result) + " where shopname = '" + shop + "'" 
-        cursor = db.execute(query3)
-        db.commit()
-
         t = time.localtime()
         time_end = time.strftime("%Y_%m_%d_%H_%M_%S")
 
