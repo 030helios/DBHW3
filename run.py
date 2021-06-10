@@ -192,7 +192,7 @@ def _DoneOrder():
 def _DoneAllOrder():
     from queryfunc import DoneAllOrder
     print(("here"))
-    OIDs = request.args.get('OIDs')
+    OIDs = request.args.get('OIDs').split()
     data = DoneAllOrder(Acc,OIDs)
     # return message: success or fail and why
     return jsonify(data)
